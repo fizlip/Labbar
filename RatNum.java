@@ -74,9 +74,4 @@ public class RatNum {
 		return Math.abs(n);		//Returnera en positiv faktor
 	}
 	
-	public static void main(String[] args) {
-		RatNum r = new RatNum(49, -168);
-		System.out.println("Num: " + r.getNumerator());
-		System.out.println("Den: " + r.getDenominator());
-	}
 }
