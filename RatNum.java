@@ -71,7 +71,7 @@ public class RatNum {
 			}
 		}
 		
-		return Math.abs(n);		//Returnera det absoluta värdet av resultatet
+		return Math.abs(n);		//Returnera en positiv faktor
 	}
 	
 	public static void main(String[] args) {
