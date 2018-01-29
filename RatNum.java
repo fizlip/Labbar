@@ -1,6 +1,7 @@
 
 public class RatNum {
-	
+	// Instans variabler
+	// Representera det rationella talet med två heltal som representerar nämnaren och täljaren
 	public int num;
 	public int den;
 	
