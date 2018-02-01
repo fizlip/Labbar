@@ -39,8 +39,8 @@ public class RatNum {
 	
 	public RatNum(RatNum x) {
 		//Kopiera det givna rationella talet
-		num = x.getNumerator();
-		den = x.getDenominator();
+		num = x.getNumerator();   // Numerator 
+		den = x.getDenominator(); // Denominator
 	}
 	
 	public int getNumerator() {
@@ -72,6 +72,45 @@ public class RatNum {
 		}
 		
 		return Math.abs(n);		//Returnera en positiv faktor
+	}
+	
+	public String toString() {
+		// Omvandla talet till string
+		String numString = Integer.toString(num);
+		String denString = Integer.toString(den);
+		return (numString + "/" + denString);
+	}
+	
+	public double toDouble() {
+		// Omvandla talet till double
+		double d = ((double) num) / ((double) den);
+		return d;
+	}
+	
+	public static RatNum parse(String s) {
+		String[] userString = s.split("/");		// Dela upp strängen så att endast heltalen är kvar
+		int[] userInts = {1,1};					// Array för täljaren och nämnaren, initera denna med värden 1 för förenkla koden
+		RatNum userRatNum = null;				// Det resulterande talet
+		
+		for(int i = 0; i < userString.length; i++) {
+			// Om talet är negativt görs omvandlingen string -> int genom att omvandla nuvarande och nästa element till ints
+			// och sedan sätta in detta i userInt
+			if (userString[i] == "-") {
+				int newInt = Integer.parseInt("-" + userString[i+1]);
+				userInts[i] = newInt;		// i kommer att korrespondera med indexet i vilken talet ska läggas
+				i++;
+			}
+			else {
+				// Om talet inte är negativt görs omvandlingen string -> int och resultatet sätts in i userInt
+				int newInt = Integer.parseInt(userString[i]);
+				userInts[i] = newInt;
+			}
+			
+		}
+		
+		userRatNum = new RatNum(userInts[0], userInts[1]);
+		return userRatNum;
+		
 	}
 	
 }
