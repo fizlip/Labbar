@@ -75,10 +75,19 @@ public class RatNum {
 	}
 	
 	public String toString() {
-		// Omvandla talet till string
-		String numString = Integer.toString(num);
-		String denString = Integer.toString(den);
-		return (numString + "/" + denString);
+		// om
+		if (den >= num) {
+			String numString = Integer.toString(num);
+			String denString = Integer.toString(den);
+			return (numString + "/" + denString);
+		}
+		else {
+			int factor = num / den; //Heltalsdel
+			String numString = Integer.toString((num - (factor * den))); // Nämnare utan heltalsdel
+			String denString = Integer.toString(den);
+			String factorString = Integer.toString(factor);
+			return (factorString + " " + numString + "/" + denString);
+		}
 	}
 	
 	public double toDouble() {
@@ -112,5 +121,58 @@ public class RatNum {
 		return userRatNum;
 		
 	}
+	
+	public RatNum(String s) {
+		parse(s);
+	}
+	
+	public Object clone(RatNum oldRatNum) {
+		//Klona ett ett ratNum objekt
+		RatNum clonedRatNum = new RatNum(oldRatNum.getNumerator(), oldRatNum.getDenominator());
+		return clonedRatNum;
+	}
+	
+	public boolean equals(RatNum r) {
+		// Bestäm om argumentet är lika med denna instans av ratNum
+		return (toDouble() == r.toDouble());
+	}
+	
+	public boolean lessThan(RatNum r) {
+		// Betäm om argumentet är mindre än nuvarande ratnum
+		return (toDouble() < r.toDouble());
+	}
+	
+	public RatNum add(RatNum r) {
+		// Lägg till r
+		num = r.den*num + den*r.num;
+		den = r.den*den;
+		RatNum m = new RatNum(num, den);
+		return m;
+	}
+	
+	public RatNum sub(RatNum r) {
+		// Ta bort r
+		num = r.den*num - den*r.num;
+		den = r.den*den;
+		RatNum m = new RatNum(num, den);
+		return m;
+	}
+	
+	public RatNum mul(RatNum n) {
+		// Multiplicera med r
+		num = num * n.num;
+		den = den * n.den;
+		RatNum m = new RatNum(num, den);
+		return m;
+	}
+	
+	public RatNum div(RatNum n) {
+		// Dividera mer r
+		num = num * n.den;
+		den = den * n.num;
+		RatNum m = new RatNum(num, den);
+		return m;
+	}
+	
 	
 }
