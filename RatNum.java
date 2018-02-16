@@ -98,7 +98,7 @@ public class RatNum {
 		}
 	}
 	
-	public double toDouble() {
+	public Double toDouble() {
 		// Omvandla talet till double
 		Double d = new Double((double) num) / ((double) den);
 		return d;
