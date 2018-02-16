@@ -1,3 +1,4 @@
+import java.util.Arrays;
 
 public class RatNum {
 	// Instans variabler
@@ -25,14 +26,21 @@ public class RatNum {
 			throw new NumberFormatException("Denominator = 0");
 		}
 		
-		int s = sgd(a,b);
-		//Förenkla med sgd för att få ratnummret i förenklad form
-		num = (a/s);
-		den = (b/s);
-		if (den < 0) {
-			//Omformatera till formen -a/b om nämnaren är mindre än 0
-			num = -num;
-			den = -den;
+		// Ta hand om gränsfall där täljaren är 0 så att inte sgd 
+		//felmeddelande upptstår.
+		if (a == 0) {
+			num = 0; den = b;
+		}
+		else {
+			int s = sgd(a,b);
+			//Förenkla med sgd för att få ratnummret i förenklad form
+			num = (a/s);
+			den = (b/s);
+			if (den < 0) {
+				//Omformatera till formen -a/b om nämnaren är mindre än 0
+				num = -num;
+				den = -den;
+			}
 		}
 		
 	}
@@ -53,7 +61,7 @@ public class RatNum {
 	
 	public static int sgd(int m, int n) {
 		//m eller n får inte vara 0. Kasta ett Exception om så är fallet.
-		if (n == 0) {
+		if (m == 0 || n == 0) {
 			throw new IllegalArgumentException("Cannot accept m, n = 0");
 		}
 		
@@ -76,15 +84,15 @@ public class RatNum {
 	
 	public String toString() {
 		// om
-		if (den >= num) {
+		if (den >= Math.abs(num)) {
 			String numString = Integer.toString(num);
 			String denString = Integer.toString(den);
 			return (numString + "/" + denString);
 		}
 		else {
 			int factor = num / den; //Heltalsdel
-			String numString = Integer.toString((num - (factor * den))); // Nämnare utan heltalsdel
-			String denString = Integer.toString(den);
+			String numString = Integer.toString(Math.abs((num - (factor * den)))); // Nämnare utan heltalsdel
+			String denString = Integer.toString(Math.abs(den));
 			String factorString = Integer.toString(factor);
 			return (factorString + " " + numString + "/" + denString);
 		}
@@ -92,7 +100,7 @@ public class RatNum {
 	
 	public double toDouble() {
 		// Omvandla talet till double
-		double d = ((double) num) / ((double) den);
+		Double d = new Double((double) num) / ((double) den);
 		return d;
 	}
 	
@@ -102,19 +110,13 @@ public class RatNum {
 		RatNum userRatNum = null;				// Det resulterande talet
 		
 		for(int i = 0; i < userString.length; i++) {
-			// Om talet är negativt görs omvandlingen string -> int genom att omvandla nuvarande och nästa element till ints
-			// och sedan sätta in detta i userInt
-			if (userString[i] == "-") {
-				int newInt = Integer.parseInt("-" + userString[i+1]);
-				userInts[i] = newInt;		// i kommer att korrespondera med indexet i vilken talet ska läggas
-				i++;
-			}
-			else {
-				// Om talet inte är negativt görs omvandlingen string -> int och resultatet sätts in i userInt
-				int newInt = Integer.parseInt(userString[i]);
-				userInts[i] = newInt;
-			}
-			
+			// Om talet inte är negativt görs omvandlingen string -> int och resultatet sätts in i userInt
+			int newInt = Integer.parseInt(userString[i]);
+			userInts[i] = newInt;
+		}
+		
+		if (userInts.length > 2) {
+			throw (new IllegalArgumentException ("Input in form a/b/c"));
 		}
 		
 		userRatNum = new RatNum(userInts[0], userInts[1]);
@@ -123,18 +125,17 @@ public class RatNum {
 	}
 	
 	public RatNum(String s) {
-		parse(s);
+		this(parse(s));
 	}
 	
-	public Object clone(RatNum oldRatNum) {
+	public Object clone() {
 		//Klona ett ett ratNum objekt
-		RatNum clonedRatNum = new RatNum(oldRatNum.getNumerator(), oldRatNum.getDenominator());
-		return clonedRatNum;
+		return new RatNum(num, den);
 	}
 	
 	public boolean equals(RatNum r) {
 		// Bestäm om argumentet är lika med denna instans av ratNum
-		return (toDouble() == r.toDouble());
+		return (den == r.getDenominator() && num == r.getNumerator());
 	}
 	
 	public boolean lessThan(RatNum r) {
@@ -144,34 +145,31 @@ public class RatNum {
 	
 	public RatNum add(RatNum r) {
 		// Lägg till r
-		num = r.den*num + den*r.num;
-		den = r.den*den;
-		RatNum m = new RatNum(num, den);
-		return m;
+		int newNum = r.den*num + den*r.num;
+		int newDen = r.den*den;
+		return new RatNum(newNum, newDen);
 	}
 	
 	public RatNum sub(RatNum r) {
 		// Ta bort r
-		num = r.den*num - den*r.num;
-		den = r.den*den;
-		RatNum m = new RatNum(num, den);
-		return m;
+		int newNum = r.den*num - den*r.num;
+		int newDen = r.den*den;
+		RatNum m = new RatNum(newNum, newDen);
+		return new RatNum(newNum, newDen);
 	}
 	
 	public RatNum mul(RatNum n) {
 		// Multiplicera med r
-		num = num * n.num;
-		den = den * n.den;
-		RatNum m = new RatNum(num, den);
-		return m;
+		int newNum = num * n.num;
+		int newDen = den * n.den;
+		return new RatNum(newNum, newDen);
 	}
 	
 	public RatNum div(RatNum n) {
 		// Dividera mer r
-		num = num * n.den;
-		den = den * n.num;
-		RatNum m = new RatNum(num, den);
-		return m;
+		int newNum = num * n.den;
+		int newDen = den * n.num;
+		return new RatNum(newNum, newDen);
 	}
 	
 	
